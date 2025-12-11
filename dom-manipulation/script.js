@@ -328,3 +328,82 @@ categoryFilter.addEventListener("change", filterQuotes);
 populateCategories();
 displayQuotes();
 renderLastViewed();
+
+
+/*===========================
+Simulate Server Interaction
+=============================*/
+
+const SERVER_URL = "https://jsonplaceholder.typicode.com/posts"; // mock server
+
+// Function to fetch "server" quotes
+async function fetchServerQuotes() {
+    try {
+        const response = await fetch(SERVER_URL);
+        const data = await response.json();
+        
+        // Simulate server quotes (mapping posts to quote objects)
+        const serverQuotes = data.slice(0, 5).map(post => ({
+            text: post.title,
+            author: `ServerUser${post.userId}`,
+            category: "Server"
+        }));
+        
+        return serverQuotes;
+    } catch (err) {
+        console.error("Failed to fetch server quotes:", err);
+        return [];
+    }
+}
+
+/*===========================
+Data syncing logic
+=============================*/
+
+async function syncWithServer() {
+    const serverQuotes = await fetchServerQuotes();
+    
+    // Map local quotes for quick lookup by text + author
+    const localMap = new Map(quotes.map(q => [`${q.text}||${q.author}`, q]));
+
+    let updates = 0;
+
+    serverQuotes.forEach(sq => {
+        const key = `${sq.text}||${sq.author}`;
+        if (!localMap.has(key)) {
+            // New server quote → add to local
+            quotes.push(sq);
+            updates++;
+        } else {
+            // Conflict → server takes precedence
+            const idx = quotes.findIndex(q => q.text === sq.text && q.author === sq.author);
+            quotes[idx] = sq;
+            updates++;
+        }
+    });
+
+    if (updates > 0) {
+        saveQuotesToLocalStorage();
+        populateCategories();
+        filterQuotes();
+        alert(`Server sync: ${updates} quotes updated or added.`);
+    }
+}
+
+// Sync automatically every 60 seconds
+setInterval(syncWithServer, 60000);
+
+// Sync manually
+const syncBtn = document.getElementById("syncBtn");
+syncBtn.addEventListener("click", syncWithServer);
+
+//handling conflict and UI notification
+
+function notifyUser(message) {
+    const note = document.getElementById("serverNotification");
+    note.textContent = message;
+    note.style.display = "block";
+    setTimeout(() => { note.style.display = "none"; }, 5000);
+}
+
+
