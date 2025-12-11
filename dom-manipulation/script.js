@@ -406,4 +406,48 @@ function notifyUser(message) {
     setTimeout(() => { note.style.display = "none"; }, 5000);
 }
 
+function fetchQuotesFromServer() {
+    // Simulated server fetch using JSONPlaceholder
+    return fetch("https://jsonplaceholder.typicode.com/posts?_limit=5")
+        .then(res => res.json())
+        .then(data => {
+            // Convert server posts into quote format
+            const serverQuotes = data.map(item => ({
+                text: item.title,
+                author: "ServerUser" + item.userId,
+                category: "Server"
+            }));
+
+            return serverQuotes;
+        })
+        .catch(err => {
+            console.error("Failed to fetch server quotes:", err);
+            return [];
+        });
+}
+
+async function syncWithServer() {
+    const serverQuotes = await fetchQuotesFromServer();
+
+    // Conflict resolution: server overwrites local duplicates
+    serverQuotes.forEach(sq => {
+        if (!quotes.some(lq => lq.text === sq.text)) {
+            quotes.push(sq);
+        }
+    });
+
+    saveQuotesToLocalStorage();
+    displayQuotes();
+}
+
+document.getElementById("syncBtn")?.addEventListener("click", syncWithServer);
+
+// 4. Optional periodic sync (every 10 sec)
+setInterval(syncWithServer, 10000);
+
+/* =======================
+   Final UI updates
+   ======================= */
+displayQuotes();
+renderLastViewed();
 
