@@ -356,7 +356,7 @@ async function syncWithServer() {
     });
 
     if (conflictsResolved) {
-        notifyUser("New quotes synced from server. Conflicts resolved.");
+        notifyUser("Quotes synced with server!");
     }
 
     saveQuotesToLocalStorage();
