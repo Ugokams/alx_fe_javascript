@@ -1,22 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Quote Generator</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dynamic Quote Generator — Storage + Import/Export</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; padding: 24px; background:#f6f8fb; }
+    .app { max-width:800px; margin:0 auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 6px 18px rgba(20,30,60,0.08); }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    h1 { margin:0; font-size:1.25rem; }
+    .controls { display:flex; gap:8px; flex-wrap:wrap; }
+    #quoteDisplay { margin:18px 0; padding:14px; background:#eef6ff; border-radius:8px; min-height:48px; }
+    form { display:flex; gap:8px; margin-bottom:12px; }
+    input[type="text"] { padding:8px 10px; border-radius:8px; border:1px solid #e0e6ef; flex:1; }
+    button { padding:8px 12px; border-radius:8px; border:none; background:#2563eb; color:#fff; cursor:pointer; }
+    .secondary { background:#e6eefc; color:#0b3b97; border:1px solid #d8e6ff; }
+    ul { margin:0; padding-left:18px; }
+    li { margin:8px 0; display:flex; align-items:flex-start; gap:10px; padding:10px; border-radius:8px; background:#fbfcff; border:1px solid #eef2f8; }
+    .meta { font-size:0.9rem; color:#0f172a; }
+    .author { color:#475569; font-size:0.9rem; margin-top:6px; }
+    .li-actions { margin-left:auto; display:flex; gap:6px; }
+    small { color:#475569; display:block; margin-top:6px; font-size:0.85rem; }
+    label.file-label { cursor:pointer; padding:8px 12px; border-radius:8px; background:#f8fafc; border:1px dashed #c7d2fe; color:#334155; }
+  </style>
 </head>
 <body>
-    <h1>Dynamic Quote Generator</h1>
+  <div class="app">
+    <header>
+      <h1>Dynamic Quote Generator</h1>
+      <div class="controls">
+        <button id="newQuote">Show New Quote</button>
+        <button id="addQuoteBtn" class="secondary">Show Add Form</button>
+        <button id="exportBtn" class="secondary">Export JSON</button>
 
-    <div id="quoteDisplay"></div>
+        <!-- file input is visually hidden; label triggers it -->
+        <input id="importFile" type="file" accept=".json,application/json" style="display:none" />
+        <label for="importFile" class="file-label" id="importLabel">Import JSON</label>
 
-    <button id="newQuote">Show New Quote</button>
-    <button id="addQuoteBtn">Add New Quote</button>
+        <button id="clearStorage" class="secondary">Clear Saved Quotes</button>
+      </div>
+    </header>
 
+    <div id="quoteDisplay" aria-live="polite">No quote shown yet.</div>
+    <small id="lastViewedNote"></small>
+
+    <!-- dynamic form container -->
     <div id="formContainer"></div>
 
+    <h3>All Quotes</h3>
     <ul id="quoteList"></ul>
-    
-    <script src="script.js"></script>
+  </div>
+
+<script src="script.js">
+</script>
 </body>
 </html>
