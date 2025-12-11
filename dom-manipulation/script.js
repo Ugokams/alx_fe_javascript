@@ -451,3 +451,24 @@ setInterval(syncWithServer, 10000);
 displayQuotes();
 renderLastViewed();
 
+async function postQuoteToServer(quote) {
+    try {
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(quote)
+        });
+
+        const data = await response.json();
+        console.log("Posted to server:", data);
+        return data;
+    } catch (error) {
+        console.error("Error posting quote:", error);
+    }
+}
+
+postQuoteToServer({ text: newQuote });
+
+
